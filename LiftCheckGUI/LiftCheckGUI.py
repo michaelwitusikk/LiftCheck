@@ -1,6 +1,6 @@
 import PySimpleGUI as sg # GUI library
-import FormScripts.overallPoseRendering as pr
-import FormScripts.bicepCurlForm as bf
+from FormScripts import bicepCurlForm as bf
+from FormScripts import overallPoseRendering as pr
 
 def main():
     
