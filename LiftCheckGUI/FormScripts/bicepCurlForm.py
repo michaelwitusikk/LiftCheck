@@ -14,7 +14,7 @@ mp_pose = mp.solutions.pose
 
 def bicepRendering():
 
-
+    s = workout_set()
     cap = cv2.VideoCapture(0)
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
@@ -38,40 +38,35 @@ def bicepRendering():
             
             #find the angle of the elbows and the angle of the shoulders
             try:
-                s = set()
                 left_angle = calculate_left_arm(results)
                 right_angle = calculate_right_arm(results)
                 #display the angle on the screen
                 cv2.putText(image, "Left Bicep: " + str(left_angle), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-                cv2.putText(image, "Right Bicep: " + str(right_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-
-                ##add one new rep to the set, when the left_angle is less than 150, begin timing the timeup of the rep
-                ##when the left_angle is greater than 150, stop timing the timeup of the rep and add the rep to the set.
-                ##create a new rep object and begin timing the timedown of the rep object.        
-                 
-                # if left_angle < 150:
-                #         r = rep()
-                #         timeup = time.time
-                # else:
-                #     r.timeup = time.time - timeup
-                #     set.left_reps.append(r)
+                cv2.putText(image, "Right Bicep: " + str(right_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)  
                 
-                # for i in set.left_reps:
-                #     cv2.putText(image, "Left Reps: " + str(i.timeup), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)   
-                    
-                    
-            except:
-                pass
-            
+                
+                
+                inRep = False
+                #if the angle of the left arm is less than 150 degrees, create a new rep
                 if left_angle < 150:
+                    #if not in a rep, create a new rep
+                    if inRep is False:
                         r = rep()
                         timeup = time.time
+                        inRep = True
+                    else:
+                        continue
+                #once the rep is complete, add how long it took to complete the rep, add the rep to the set
                 else:
+                    inRep = False
                     r.timeup = time.time - timeup
-                    set.left_reps.append(r)
+                    workout_set.left_reps.append(r)  
+            except:
+                pass
                 
-                for i in set.left_reps:
-                    cv2.putText(image, "Left Reps: " + str(i.timeup), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
+           
+            for i in workout_set.left_reps:
+                cv2.putText(image, "Left Reps: " + str(i.timeup), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
             
 
             cv2.imshow('Mediapipe Feed', image)
@@ -123,30 +118,30 @@ def calculate_left_armpit(result):
     hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x, landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
     
     
-class set():
+class workout_set():
     def __init__(self):
-        #total reps
-        self.reps = self.left_reps + self.right_reps
-        #list of all reps on right hand
-        self.right_reps = []
         #list of all reps on left hand
         self.left_reps = []
+        #list of all reps on right hand
+        self.right_reps = []
+        #total reps
+        self.reps = self.left_reps + self.right_reps
         #left arm reps
-        self.left_reps = len(self.left_reps)
+        self.left_reps_len = len(self.left_reps)
         #right arm reps
-        self.right_reps = len(self.right_reps)
+        self.right_reps_len = len(self.right_reps)
       
         
 class rep():
     def __init__(self):
         #how much time was the person doing the rep
         self.timeup = 0
-        #how much time did the person rest
-        self.timedown = 0
+        self.form_issues = []
         
-    #uses the time module to see how long a rep is taking up or resting    
-    def timeCounter(self):
-        time = time.time()
-        return time
+    def form_issues(self):
+        return self.form_issues
+    
+    def add_form_issue(self, form_issue):
+        self.form_issues.append(form_issue)
             
         
