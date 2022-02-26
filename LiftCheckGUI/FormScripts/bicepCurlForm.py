@@ -15,6 +15,8 @@ mp_pose = mp.solutions.pose
 def bicepRendering():
 
     s = workout_set()
+    rep_count = 0
+    inRep = False
     cap = cv2.VideoCapture(0)
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
@@ -40,38 +42,45 @@ def bicepRendering():
             try:
                 left_angle = calculate_left_arm(results)
                 right_angle = calculate_right_arm(results)
+                left_armpit_angle = calculate_left_armpit(results)
                 #display the angle on the screen
                 cv2.putText(image, "Left Bicep: " + str(left_angle), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-                cv2.putText(image, "Right Bicep: " + str(right_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)  
+                #cv2.putText(image, "Right Bicep: " + str(right_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
+                cv2.putText(image, "left armpit: " + str(left_armpit_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)  
                 
                 
                 
-                inRep = False
                 #if the angle of the left arm is less than 150 degrees, create a new rep
-                if left_angle < 150:
+                if left_angle < 165:
                     #if not in a rep, create a new rep
                     if inRep is False:
+                        print(rep_count)
                         r = rep()
+                        r.which_side_rep = "left"
                         timeup = time.time
                         inRep = True
-                    else:
-                        continue
+                        rep_count += 1
+                        if left_armpit_angle > 40:
+                            r.add_form_issue("Left elbow too far away from body")
                 #once the rep is complete, add how long it took to complete the rep, add the rep to the set
                 else:
                     inRep = False
                     r.timeup = time.time - timeup
-                    workout_set.left_reps.append(r)  
+                    print("hello")
+                    s.left_reps.append(r)  
             except:
                 pass
                 
            
-            for i in workout_set.left_reps:
-                cv2.putText(image, "Left Reps: " + str(i.timeup), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
+            for i in s.left_reps:
+                print(i.timeup)
+                cv2.putText(image, "Left Reps: " + str(i), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
             
 
             cv2.imshow('Mediapipe Feed', image)
             if cv2.waitKey(10) & 0xFF == ord('q'):
                 break
+            
         cap.release()
         cv2.destroyAllWindows()
         
@@ -110,13 +119,16 @@ def calculate_right_armpit(result):
     shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
     elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
     hip =  [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+    angle = calculate_angle(shoulder, elbow, hip)
+    return angle
 
 def calculate_left_armpit(result):
     landmarks = result.pose_landmarks.landmark
     shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
     elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
     hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x, landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
-    
+    angle = calculate_angle(shoulder, elbow, hip)
+    return abs(angle - 180).round(0)
     
 class workout_set():
     def __init__(self):
@@ -137,11 +149,15 @@ class rep():
         #how much time was the person doing the rep
         self.timeup = 0
         self.form_issues = []
+        self.which_side_rep = ""
         
     def form_issues(self):
         return self.form_issues
     
-    def add_form_issue(self, form_issue):
-        self.form_issues.append(form_issue)
+    def add_form_issue(self):
+        self.form_issues.append(self.form_issue)
+        
+    def add_which_side(self, side):
+        self.which_side_rep = side
             
         
