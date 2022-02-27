@@ -1,10 +1,14 @@
 import PySimpleGUI as sg # GUI library
 from FormScripts import bicepCurlForm as bf
 from FormScripts import overallPoseRendering as pr
-
+bicep_curl_image = 'LiftCheckGUI\\GUIphotos\\bicepCurl.png'
+squat_image = 'LiftCheckGUI\\GUIphotos\\squatForm.png'
 def main():
     
-    layout = [[sg.Titlebar('Lift Check', key='-text-')], [sg.Button("Pose Renderings"), sg.Button("Squat Form"), sg.Button("Bicep Curl Form"), sg.Button("Push up Form")]]
+    layout = [[sg.Titlebar('Lift Check', key='-text-')], 
+              [sg.Button("Pose Renderings"), sg.Button("Squat Form", image_filename=squat_image, image_subsample=3), 
+               sg.Button("Bicep Curl Form", image_filename=bicep_curl_image, image_subsample=3), 
+               sg.Button("Push up Form")]]
 
     # Create the window
     window = sg.Window("Lift Check v1.0", layout, size=(800,600))
