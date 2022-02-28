@@ -1,8 +1,8 @@
 import PySimpleGUI as sg # GUI library
 from FormScripts import bicepCurlForm as bf
 from FormScripts import overallPoseRendering as pr
-bicep_curl_image = 'LiftCheckGUI\\GUIphotos\\bicepCurl.png'
-squat_image = 'LiftCheckGUI\\GUIphotos\\squatForm.png'
+bicep_curl_image = 'Lift Check Application\\GUIphotos\\bicepCurl.png'
+squat_image = 'Lift Check Application\\GUIphotos\\squatForm.png'
 def main():
     
     layout = [[sg.Titlebar('Lift Check', key='-text-')], 
@@ -23,7 +23,7 @@ def main():
         if event == "Pose Renderings":
             pr.poseRendering()
         if event == "Bicep Curl Form":
-            bf.bicepRendering2()
+            bf.bicepRendering()
             
     window.close()
 
