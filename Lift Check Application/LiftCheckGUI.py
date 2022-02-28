@@ -23,7 +23,7 @@ def main():
         if event == "Pose Renderings":
             pr.poseRendering()
         if event == "Bicep Curl Form":
-            bf.bicepRendering()
+            bf.bicepRendering2()
             
     window.close()
 
