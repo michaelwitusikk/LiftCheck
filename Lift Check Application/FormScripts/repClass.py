@@ -22,6 +22,9 @@ class rep():
     #returns the time a rep took to complete
     def get_time_str(self):
         return self.timeup
+    
+    def toString(self):
+        return 
 
     def __str__(self):
         return str([self.timeup, self.form_issues, self.which_side_rep])
