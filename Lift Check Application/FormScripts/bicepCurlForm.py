@@ -18,10 +18,13 @@ def bicepRendering():
 
     s = workoutSetClass.workout_set()
     rep_count = 0
-    count = 0
+    count = 90
     tracking = None
-    currentRep = None
+    currentLeftRep = None
+    currentRightRep = None
     cap = cv2.VideoCapture(0)
+    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
             ret, frame = cap.read()
@@ -47,51 +50,101 @@ def bicepRendering():
                 left_angle = calculate_left_arm(results)
                 right_angle = calculate_right_arm(results)
                 left_armpit_angle = calculate_left_armpit(results)
+                right_armpit_angle = calculate_right_armpit(results)
                 #display the angle on the screen
-                cv2.putText(image, "Left Bicep: " + str(left_angle), (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 55, 255), 2)
-                #cv2.putText(image, "Right Bicep: " + str(right_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-                cv2.putText(image, "left armpit: " + str(left_armpit_angle), (10, 250), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 55, 255), 2)  
+                cv2.putText(image, "Left Bicep: " + str(left_angle), (15, 35), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
+                cv2.putText(image, "Right Bicep: " + str(right_angle), (355, 35), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
+                cv2.putText(image, "right armpit: " + str(right_armpit_angle), (355, 65), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
+                cv2.putText(image, "left armpit: " + str(left_armpit_angle), (15, 65), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)  
                 
                 
                 # Are we tracking yet?
                 if tracking:
-                    # 
+
                     if left_angle > 150:
-                    #if not in a rep, create a new rep
-                        if currentRep is None:
-                            currentRep = repClass.rep()
-                            currentRep.which_side_rep = "left"
-                            currentRep.timeup = time.time
-                        else:
-                            pass
-                     # arm angle is less than 165 degrees, curling
-                    else:
-                        # Are we in a rep?
-                        if currentRep:
+                        if currentLeftRep is None:
+                            currentLeftRep = repClass.rep()
+                            currentLeftRep.which_side_rep = "left"
+                            currentLeftRep.timeup = time.time
+                    
+                    if right_angle > 150:
+                        if currentRightRep is None:
+                            currentRightRep = repClass.rep()
+                            currentRightRep.which_side_rep = "right"
+                            currentRightRep.timeup = time.time
+
+                    if currentLeftRep:
                             # Have we finsished the curl?
                             if left_angle < 55:
-                                # Curl is finished, add the rep to workout set\
-                                print(currentRep.timeup)
+                                # Curl is finished, add the rep to workout set
                                 #repStartTime = currentRep.timeup
                                 #currentRep.timeup = time.time - repStartTime
-                                s.left_reps.append(currentRep)
-                                currentRep = None
+                                if left_angle < 55:
+                                    s.left_reps.append(currentLeftRep)
+                                    currentLeftRep = None
                             else:
                                 # In the middle of a curl, check for form issues?
-                                if left_armpit_angle > 40:
-                                    currentRep.add_form_issue("Left elbow too far away from body")
-                        else:
-                            # There is no current rep, but arm is curled. Ignore
-                            pass
+                                if left_armpit_angle > 35:
+                                    currentLeftRep.add_form_issue("Left elbow too far away from body")
+                    
+                    if currentRightRep:
+                            # Have we finsished the curl?
+                            if right_angle < 55:
+                                # Curl is finished, add the rep to workout set
+                                #repStartTime = currentRep.timeup
+                                #currentRep.timeup = time.time - repStartTime
+                                if right_angle < 55:
+                                    s.right_reps.append(currentRightRep)
+                                    currentRightRep = None
+                            else:
+                                # In the middle of a curl, check for form issues?
+                                if right_armpit_angle > 35:
+                                    currentRightRep.add_form_issue("Right elbow too far away from body")
+
+                    print("\nSet:   ")
+                    for rep in s.right_reps:
+                        print(rep)
+                    print("----")
+                    for rep in s.left_reps:
+                        print(rep)
+                    
+                    if (len(s.left_reps) >= 3) and (len(s.right_reps) >= 3):
+                        with open('bicepcurlform.txt', 'w') as f:
+                            f.write("Left Reps:\n")
+                            for i in range(len(s.left_reps)):
+                                if len(s.left_reps[i].get_form_issues()) == 0:
+                                    f.write("Rep #" + str(i+1)+": Perfect")
+                                    f.write("\n")
+                                else:
+                                    tempStr = ""
+                                    for issue in s.left_reps[i].get_form_issues():
+                                        tempStr += str(issue)
+                                        tempStr += ', '
+                                    f.write("Rep #" + str(i+1)+": " + tempStr)
+                                    f.write("\n")
+                            f.write("Right Reps:\n")
+                            for i in range(len(s.right_reps)):
+                                if len(s.right_reps[i].get_form_issues()) == 0:
+                                    f.write("Rep #" + str(i+1)+": Perfect")
+                                    f.write("\n")
+                                else:
+                                    tempStr = ""
+                                    for issue in s.right_reps[i].get_form_issues():
+                                        tempStr += str(issue)
+                                        tempStr += ', '
+                                    f.write("Rep #" + str(i+1)+": " + tempStr)
+                                    f.write("\n")
+                            f.close()
+                        break
+                            
+
 
                 else:
                     # Not tracking, should we be?
-                    if count < 150:
-                        print("time.time(): %f " %  time.time)
-                        cv2.putText(image, "Starting: " + str(round(count/30)), (400, 400), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 55, 255), 2)
-                        count += 1
+                    if count > 0:
+                        cv2.putText(image, "Starting in: " + str(round(count/30)), (200, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 55, 255), 2)
+                        count -= 1
                     else:
-                        print(time.time())
                         tracking = True
 
 
@@ -100,12 +153,6 @@ def bicepRendering():
  
             except:
                 pass
-
-            if s.left_reps:   
-                print("-----------------")
-                for e in s.left_reps:
-                    print(e)
-                print("-----------------")
             
 
             cv2.imshow('Mediapipe Feed', image)
@@ -222,7 +269,7 @@ def calculate_right_armpit(result):
     elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
     hip =  [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
     angle = calculate_angle(shoulder, elbow, hip)
-    return angle
+    return abs(angle - 180).round(0)
 
 def calculate_left_armpit(result):
     landmarks = result.pose_landmarks.landmark
