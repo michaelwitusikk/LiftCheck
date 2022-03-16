@@ -2,8 +2,8 @@ import PySimpleGUI as sg # GUI library
 from FormScripts import bicepCurlForm as bf
 from FormScripts import overallPoseRendering as pr
 
-bicep_curl_image = 'GUIphotos\\bicepCurl.png'
-squat_image = 'GUIphotos\\squatForm.png'
+bicep_curl_image = 'Lift Check Application/GUIphotos/bicepCurl.png'
+squat_image = 'Lift Check Application/GUIphotos/squatForm.png'
 
 
 def main():
