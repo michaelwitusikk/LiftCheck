@@ -1,4 +1,4 @@
 Reps:
-Rep #1: Perfect! Depth Angle: 52.0
-Rep #2: Not to depth (90 degrees or below),  Depth Angle: 106.0
-Rep #3: Perfect! Depth Angle: 71.0
+Rep #1: Perfect! Depth Angle: 63.0
+Rep #2: Perfect! Depth Angle: 63.0
+Rep #3: Perfect! Depth Angle: 61.0
