@@ -10,11 +10,7 @@ from FormScripts import workoutSetClass
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-##TODO##
-
-
 def bicepRendering(max_reps,draw_pose):
-    # Test Commit
 
     s = workoutSetClass.workout_set()
     rep_count = 0
