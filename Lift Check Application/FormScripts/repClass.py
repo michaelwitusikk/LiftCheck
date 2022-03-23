@@ -4,6 +4,7 @@ class rep():
         self.timeup = 0
         #list of form issues
         self.form_issues = set()
+        self.min_angle = 180
         #which side the rep was completed on
         self.which_side_rep = ""
     

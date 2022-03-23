@@ -13,7 +13,7 @@ mp_pose = mp.solutions.pose
 ##TODO##
 
 
-def bicepRendering():
+def bicepRendering(max_reps,draw_pose):
     # Test Commit
 
     s = workoutSetClass.workout_set()
@@ -37,12 +37,13 @@ def bicepRendering():
             image.flags.writeable = True
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
             # Render detections
-            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                    mp_drawing.DrawingSpec(
-                                        color=(245, 117, 66), thickness=2, circle_radius=2),
-                                    mp_drawing.DrawingSpec(
-                                        color=(245, 66, 230), thickness=2, circle_radius=2)
-                                    )
+            if draw_pose:
+                mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                                        mp_drawing.DrawingSpec(
+                                            color=(245, 117, 66), thickness=2, circle_radius=2),
+                                        mp_drawing.DrawingSpec(
+                                            color=(245, 66, 230), thickness=2, circle_radius=2)
+                                        )
             
             
             #find the angle of the elbows and the angle of the shoulders
@@ -79,9 +80,8 @@ def bicepRendering():
                                 # Curl is finished, add the rep to workout set
                                 #repStartTime = currentRep.timeup
                                 #currentRep.timeup = time.time - repStartTime
-                                if left_angle < 55:
-                                    s.left_reps.append(currentLeftRep)
-                                    currentLeftRep = None
+                                s.left_reps.append(currentLeftRep)
+                                currentLeftRep = None
                             else:
                                 # In the middle of a curl, check for form issues?
                                 if left_armpit_angle > 35:
@@ -93,9 +93,8 @@ def bicepRendering():
                                 # Curl is finished, add the rep to workout set
                                 #repStartTime = currentRep.timeup
                                 #currentRep.timeup = time.time - repStartTime
-                                if right_angle < 55:
-                                    s.right_reps.append(currentRightRep)
-                                    currentRightRep = None
+                                s.right_reps.append(currentRightRep)
+                                currentRightRep = None
                             else:
                                 # In the middle of a curl, check for form issues?
                                 if right_armpit_angle > 35:
@@ -108,7 +107,7 @@ def bicepRendering():
                     for rep in s.left_reps:
                         print(rep)
                     
-                    if (len(s.left_reps) >= 3) and (len(s.right_reps) >= 3):
+                    if (len(s.left_reps) >= int(max_reps)) and (len(s.right_reps) >= int(max_reps)):
                         with open('bicepcurlform.txt', 'w') as f:
                             f.write("Left Reps:\n")
                             for i in range(len(s.left_reps)):
@@ -161,79 +160,6 @@ def bicepRendering():
             
         cap.release()
         cv2.destroyAllWindows()
-
-
-# def bicepRendering2():
-
-#     s = workout_set()
-#     rep_count = 0
-#     inRep = False
-#     cap = cv2.VideoCapture(0)
-#     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
-#         while cap.isOpened():
-#             ret, frame = cap.read()
-#             # Recolor image to RGB
-#             image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-#             image.flags.writeable = False
-#             # Make detection
-#             results = pose.process(image)
-#             # Recolor back to BGR
-#             image.flags.writeable = True
-#             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-#             # Render detections
-#             mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-#                                     mp_drawing.DrawingSpec(
-#                                         color=(245, 117, 66), thickness=2, circle_radius=2),
-#                                     mp_drawing.DrawingSpec(
-#                                         color=(245, 66, 230), thickness=2, circle_radius=2)
-#                                     )
-            
-            
-#             #find the angle of the elbows and the angle of the shoulders
-#             try:
-#                 left_angle = calculate_left_arm(results)
-#                 right_angle = calculate_right_arm(results)
-#                 left_armpit_angle = calculate_left_armpit(results)
-#                 #display the angle on the screen
-#                 cv2.putText(image, "Left Bicep: " + str(left_angle), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-#                 #cv2.putText(image, "Right Bicep: " + str(right_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-#                 cv2.putText(image, "left armpit: " + str(left_armpit_angle), (10, 55), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)  
-                
-                
-                
-#                 #if the angle of the left arm is less than 150 degrees, create a new rep
-#                 if left_angle < 165:
-#                     #if not in a rep, create a new rep
-#                     if inRep is False:
-#                         print(rep_count)
-#                         r = rep()
-#                         r.which_side_rep = "left"
-#                         timeup = time.time
-#                         inRep = True
-#                         rep_count += 1
-#                         if left_armpit_angle > 40:
-#                             r.add_form_issue("Left elbow too far away from body")
-#                 #once the rep is complete, add how long it took to complete the rep, add the rep to the set
-#                 else:
-#                     inRep = False
-#                     r.timeup = time.time - timeup
-#                     print("hello")
-#                     s.left_reps.append(r)  
-#             except:
-#                 pass
-                
-           
-#             for i in s.left_reps:
-#                 print(i.timeup)
-#                 cv2.putText(image, "Left Reps: " + str(i), (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 55, 255), 2)
-            
-
-#             cv2.imshow('Mediapipe Feed', image)
-#             if cv2.waitKey(10) & 0xFF == ord('q'):
-#                 break
-            
-#         cap.release()
-#         cv2.destroyAllWindows()
                        
 def calculate_angle(a,b,c):
     a = np.array(a) # First
