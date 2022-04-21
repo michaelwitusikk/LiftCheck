@@ -17,13 +17,17 @@ from FormScripts import workoutSetClass
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
-def pushup_render(max_reps,draw_pose):
+def pushup_render(max_reps,draw_pose, videoLocation):
     s = workoutSetClass.workout_set()
     rep_count = 0
-    count = 50
+    count = 0
     tracking = None
     current_rep = None
-    cap = cv2.VideoCapture(0)
+    if videoLocation != "":
+        cap = cv2.VideoCapture(videoLocation)
+    else:
+        count = 90
+        cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     mytext = 'Make sure to go to depth'

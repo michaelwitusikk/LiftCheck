@@ -1,14 +1,30 @@
 Left Reps:
 Rep #1: Perfect
 Rep #2: Perfect
-Rep #3: Perfect
-Rep #4: Left elbow too far away from body, 
-Rep #5: Left elbow too far away from body, 
-Rep #6: Left elbow too far away from body, 
+Rep #3: Left elbow too far away from body, 
+Rep #4: Perfect
+Rep #5: Perfect
+Rep #6: Perfect
+Rep #7: Perfect
+Rep #8: Perfect
+Rep #9: Perfect
+Rep #10: Perfect
+Rep #11: Perfect
+Rep #12: Perfect
+Rep #13: Perfect
+Rep #14: Perfect
+Rep #15: Perfect
+Rep #16: Perfect
+Rep #17: Left elbow too far away from body, 
+Rep #18: Perfect
+Rep #19: Perfect
+Rep #20: Perfect
+Rep #21: Left elbow too far away from body, 
+Rep #22: Left elbow too far away from body, 
 Right Reps:
-Rep #1: Perfect
-Rep #2: Perfect
-Rep #3: Perfect
+Rep #1: Right elbow too far away from body, 
+Rep #2: Right elbow too far away from body, 
+Rep #3: Right elbow too far away from body, 
 Rep #4: Right elbow too far away from body, 
 Rep #5: Right elbow too far away from body, 
 Rep #6: Right elbow too far away from body, 

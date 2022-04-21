@@ -11,16 +11,20 @@ mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
 
-def bicepRendering(max_reps, draw_pose):
+def bicepRendering(max_reps, draw_pose, videoLocation):
 
     s = workoutSetClass.workout_set()
     Lrep_count = 0
     Rrep_count = 0
-    count = 90
+    count = 0
     tracking = None
     currentLeftRep = None
     currentRightRep = None
-    cap = cv2.VideoCapture(0)
+    if videoLocation != "":
+        cap = cv2.VideoCapture(videoLocation)
+    else:
+        count = 90
+        cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
