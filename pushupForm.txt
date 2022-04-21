@@ -1,0 +1,7 @@
+Reps:
+Rep #1: Make sure to get to depth,  Depth Angle: 107.0
+Rep #2: Perfect! Depth Angle: 2.0
+Rep #3: Perfect! Depth Angle: 43.0
+Rep #4: Perfect! Depth Angle: 13.0
+Rep #5: Perfect! Depth Angle: 13.0
+Rep #6: Perfect! Depth Angle: 2.0

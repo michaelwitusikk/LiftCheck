@@ -2,6 +2,7 @@ import PySimpleGUI as sg # GUI library
 from FormScripts import bicepCurlForm as bf
 from FormScripts import overallPoseRendering as pr
 from FormScripts import squatForm as sf
+from FormScripts import pushupForm as pF
 
 bicep_curl_image = 'Lift Check Application/GUIphotos/bicepCurl.png'
 squat_image = 'Lift Check Application/GUIphotos/squatForm2.png'
@@ -31,6 +32,9 @@ def main():
         # This is curl event
         if event == "  ":
             bf.bicepRendering(values[0],values[1])
+
+        if event == "   ":
+            pF.pushup_render(values[0],values[1])
             
     window.close()
 

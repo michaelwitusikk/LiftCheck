@@ -20,10 +20,10 @@ mp_pose = mp.solutions.pose
 def squat_render(max_reps,draw_pose):
     s = workoutSetClass.workout_set()
     rep_count = 0
-    count = 0
+    count = 90
     tracking = None
     current_rep = None
-    cap = cv2.VideoCapture("longSquat.mov")
+    cap = cv2.VideoCapture(0)
     cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
     cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
     mytext = 'Make sure to squat to parallel'

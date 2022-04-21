@@ -20,7 +20,7 @@ mp_pose = mp.solutions.pose
 def pushup_render(max_reps,draw_pose):
     s = workoutSetClass.workout_set()
     rep_count = 0
-    count = 0
+    count = 50
     tracking = None
     current_rep = None
     cap = cv2.VideoCapture(0)
@@ -30,13 +30,9 @@ def pushup_render(max_reps,draw_pose):
     myobj = gTTS(text=mytext, lang='en', slow=False)
     myobj.save("parallelissue.mp3")
     
-    myText = "keep your butt down, try to stay parrallel"
+    myText = "keep back straight"
     myobj = gTTS(text=mytext, lang='en', slow=False)
-    myobj.save("buttInTheAir.mp3")
-    
-    myText = "keep your butt is too low, try to stay parrallel"
-    myobj = gTTS(text=mytext, lang='en', slow=False)
-    myobj.save("buttTooLow.mp3")
+    myobj.save("backstraight.mp3")
     
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
@@ -70,20 +66,20 @@ def pushup_render(max_reps,draw_pose):
                 cv2.rectangle(image, (0,0), (280,100), (0,0,0), -1)
 
                 cv2.putText(image, "Count: " + str(rep_count), (15, 82), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
-                cv2.putText(image, "body angle: " + str(calculate_body_angle), (15, 35), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
+                cv2.putText(image, "body angle: " + str(body_angle), (15, 35), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
+                cv2.putText(image, "left angle: " + str(left_arm), (15, 100), cv2.FONT_HERSHEY_SIMPLEX, .75, (0, 55, 255), 2)
                 
                 # Are we tracking yet?
                 if tracking:
                     if current_rep is None and (right_arm > 160 or left_arm > 160):
                         current_rep = repClass.rep()
                     if current_rep:
-                        if (current_rep.min_angle > left_arm):
-                            current_rep.min_angle = left_arm
-                        if (left_arm - 15 > current_rep.min_angle):
-                            if current_rep.min_angle >= 100:
-                                current_rep.add_form_issue("Make sure to get to depth")
-                                thread = Thread(target = say_issue, args = ('./parallelissue.mp3',))
-                                thread.start()
+                        if body_angle > 25:
+                            current_rep.add_form_issue("Straight back")
+                            thread = Thread(target = say_issue, args = ('./backstraight.mp3',))
+                            thread.start()
+
+                        if (left_arm < 90):
                             rep_count += 1
                             s.left_reps.append(current_rep)
                             current_rep = None
@@ -142,7 +138,7 @@ def calculate_body_angle(results):
     ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
     shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
     #calculate the angle between the shoulders, elbow, and wrists
-    angle = calculate_angle(hip, ankle, shoulder)
+    angle = calculate_angle(ankle, hip, shoulder)
     return abs(180-angle).round(0)
 
 def calculate_right_arm_angle(results):
@@ -151,7 +147,7 @@ def calculate_right_arm_angle(results):
     elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
     shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
     #calculate the angle between the shoulders, elbow, and wrists
-    angle = calculate_angle(wrist, elbow, shoulder)
+    angle = calculate_angle(shoulder, elbow, wrist)
     return abs(180-angle).round(0)
 
 def calculate_left_arm_angle(results):
@@ -160,7 +156,7 @@ def calculate_left_arm_angle(results):
     elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
     shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
     #calculate the angle between the shoulders, elbow, and wrists
-    angle = calculate_angle(wrist, elbow, shoulder)
+    angle = calculate_angle(elbow, shoulder, wrist)
     return abs(180-angle).round(0)
 
 def say_issue(mp3):
