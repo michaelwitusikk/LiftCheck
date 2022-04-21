@@ -15,7 +15,7 @@ def main():
               [sg.Button(" ", image_filename=squat_image, image_subsample=2),
                sg.Button("  ", image_filename=bicep_curl_image, image_subsample=2),
                sg.Button("   ", image_filename=pushup_image, image_subsample=4)],
-               [sg.Text('_'*160)]
+               [sg.Text('_'*190, font=('Helvetica', 20))]
                ,[sg.Text('Number of Reps:',font=('Helvetica', 20))],[[sg.Slider(range=(3,12),default_value=6,size=(20,15),orientation='horizontal',font=('Helvetica', 20))],],
                [sg.Checkbox("Draw Pose?", font=('Helvetica', 20),pad=15, default=True)], [[sg.Text('Use Video File:',font=('Helvetica', 20))],[sg.FileBrowse(key="-IN-")]]]
 
