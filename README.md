@@ -23,9 +23,18 @@ To run the project:
 python3 LiftCheckGUI.py
 ```
 Set number of repititions, draw pose skeleton on video option, and browse for video input.
-![Main Gui](https://drive.google.com/file/d/1wYbsJmzfV7Kj7mLvsSIE2ANUoPp_TIcH/view?usp=sharing)
-![Squat Example](https://drive.google.com/file/d/1JokEDiSxRQDm_ZfrLQwFEWN2J_e_Hmbv/view?usp=sharing)
+![Main Gui](https://drive.google.com/uc?export=view&id=1wYbsJmzfV7Kj7mLvsSIE2ANUoPp_TIcH)
+![Squat Example](https://drive.google.com/uc?export=view&id=1JokEDiSxRQDm_ZfrLQwFEWN2J_e_Hmbv)
 
+```shell
+Reps:
+Rep #1: Perfect! Depth Angle: 57.0
+Rep #2: Not to depth (90 degrees or below),  Depth Angle: 162.0
+Rep #3: Perfect! Depth Angle: 54.0
+Rep #4: Not to depth (90 degrees or below),  Depth Angle: 162.0
+Rep #5: Perfect! Depth Angle: 46.0
+Rep #6: Perfect! Depth Angle: 50.0
+```
 For best results, use high contrast backgroud, with only one person visible. Entire body must be in frame.
 Videos of squat, bicep curl must be front facing, squat can be from left side portrait.
 
