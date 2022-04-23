@@ -23,6 +23,7 @@ To run the project:
 python3 LiftCheckGUI.py
 ```
 Set number of repititions, draw pose skeleton on video option, and browse for video input.
+<img src="https://drive.google.com/uc?export=view&id=1wYbsJmzfV7Kj7mLvsSIE2ANUoPp_TIcH" height="800">
 ![Main Gui](https://drive.google.com/uc?export=view&id=1wYbsJmzfV7Kj7mLvsSIE2ANUoPp_TIcH)
 ![Squat Example](https://drive.google.com/uc?export=view&id=1JokEDiSxRQDm_ZfrLQwFEWN2J_e_Hmbv)
 
